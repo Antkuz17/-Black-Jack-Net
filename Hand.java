@@ -36,6 +36,10 @@ public class Hand implements Iterable<Card>{
         hand.add(card);
     }
 
+    public void removeCard(int index){
+        hand.remove(index);
+    }
+
     /**
      * Checks whether the total hand value exceeds 21.
      *

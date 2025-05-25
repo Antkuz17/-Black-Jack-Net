@@ -46,6 +46,7 @@ public class Player {
             amount = input.nextInt();
         }
         bet += amount;
+        printBet();
         balance -=bet;
     }
     /**
@@ -77,12 +78,13 @@ public class Player {
      * Occurs when player has blackjack off first two cards and dealer does not
      */
     public void naturalBJ(){
-        balance += bet/2;
+        balance += 3*bet/2;
         bet = 0;
+        printBalance();
     }
     /**
      * Checks if the player can afford insurance
-     * If they can
+     * If they can, it takes half of their bet and adds to the insurance
     */
     public void setInsurance(){
         if(balance< bet/2){
@@ -91,7 +93,37 @@ public class Player {
         }
         insurance = bet/2;
         balance -= insurance;
+        printInsurance();
+        printBalance();
+        printBet();
     }
+
+    public void doubleDown(){
+        if(balance < bet){
+            System.out.println("You are broke, cant double down");
+            return;
+        }
+        balance -= bet;
+        bet = bet *2;
+        printBalance();
+        printBet();
+    }
+
+    public void printBet(){
+        System.out.println("Bet: " + bet);
+    }
+
+    public void printBalance() {
+        System.out.println("Balance: " + balance);
+    }
+
+    public void printInsurance() {
+        System.out.println("Insurance: " + insurance);
+
+    }
+
+
+
 
     
 

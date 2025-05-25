@@ -8,6 +8,7 @@ public class Game {
         private Player player = new Player(playerHand, 1000, "Anton", 0,  0);
         private Dealer dealer = new Dealer(dealerHand);
         public static Scanner input = new Scanner(System.in);
+        private boolean gameOver = false;
 
         public Game() {
                 // Initialize deck, player, and dealer
@@ -21,19 +22,17 @@ public class Game {
                 dealInitialCards(); // deal initial hands (both player and dealer)
                 System.out.println("How much would you like to bet on this hand?: ");
                 player.placeBet(input.nextInt());
+                input.nextLine(); // consumes newline characters
                 System.out.println("You have the following cards: ");
                 playerHand.showHand();
                 System.out.println("The dealers up card is: ");
                 (dealerHand.getCard(0)).readCard();
                 playerTurn();
+                if (gameOver == false){
+                        dealerTurn();
+                }
+                System.out.println("Final Balance: " + player.getBalance());
 
-                /*
-                 * take in bets
-                 * deal initial hand
-                 * player turn
-                 * dealer turn
-                 * do you want to play again
-                 */
         }
 
         /**
@@ -45,8 +44,11 @@ public class Game {
         public void dealInitialCards() {
                 playerHand.addCard(deck.draw());
                 dealerHand.addCard(deck.draw());
-                dealerHand.addCard(deck.draw());
                 playerHand.addCard(deck.draw());
+                dealerHand.addCard(deck.draw());
+                // playerHand.addCard(new Card("Spades", "Ace"));
+                // playerHand.addCard(new Card("Spades", "King"));
+                
         }
 
         public void playerTurn() {
@@ -56,10 +58,12 @@ public class Game {
                                                                 // pushed
                                 System.out.println("Its a push, dealer also has blackJack");
                                 player.pushBet();
+                                gameOver = true;
                                 return;
                         } else {
                                 System.out.println("You win, dealer does not have blackJack");
                                 player.naturalBJ();
+                                gameOver = true;
                                 return;
                         }
                 }
@@ -69,23 +73,61 @@ public class Game {
                         System.out.println("Would you like insurance? (y/n)");
                         String insuranceAnswer = input.nextLine();
                         if (insuranceAnswer.equalsIgnoreCase("y")){
-
+                                player.setInsurance();
                         }
                 }
-                if (playerHand.checkIfSplitPossible()) {
-                        // logic for splitting
+
+                System.out.println("Would you like to double down (y/n)");
+                String doubleDownAnswer = input.nextLine();
+                if(doubleDownAnswer.equalsIgnoreCase("y")){
+                        player.doubleDown();
+                }
+                // hit or stand logic
+                System.out.println("Your hand has a value of: " + playerHand.getTotalValue());
+                System.out.print("Would you like to hit or stand?: (h/s)");
+                String choice = input.nextLine();
+                while(choice.equalsIgnoreCase("h")){
+                        playerHand.addCard(deck.draw());
+                        System.out.println("Your hand is: ");
+                        playerHand.showHand();
+                        if(playerHand.checkIfBust()){
+                                System.out.println("You are over 21, you bust and loose");
+                                player.looseBet();
+                                gameOver = true;
+                                return;
+                        }
+                        System.out.println("Your hand has a value of: " + playerHand.getTotalValue());
+                        System.out.print("Would you like to hit or stand?: (h/s)");
+                        choice = input.nextLine();
                 }
 
-                /*
-                 * hit
-                 * stand
-                 * double down
-                 * split
-                 * surrender
-                 * insurance
-                 */
+                System.out.println("Your turn is over, now its dealer turn");
         }
 
+        public void dealerTurn(){
+                System.out.println("Dealer Turn: ");
+                System.out.println("The dealer has the following");
+                dealerHand.showHand();
+                System.out.print("Value: " + dealerHand.getTotalValue());
+                while(dealerHand.getTotalValue() <17){
+                        dealerHand.addCard(deck.draw());
+                        System.out.println("The dealer has the following");
+                        dealerHand.showHand();
+                        System.out.print("Value: " + dealerHand.getTotalValue());
+                        if(dealerHand.getTotalValue() >21){
+                                System.out.println("Dealer busts, you win");
+                                player.winBet();
+                        }
+                }
+                if(dealerHand.getTotalValue() > playerHand.getTotalValue()){
+                        System.out.println("You lost, boohoo");
+                        player.looseBet();
+                }
+                else{
+                        System.out.println("You win, good job");
+                        player.winBet();
+                }
+        }
         /**
          * Asks if the player wants an review on game rules
          */
