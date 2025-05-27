@@ -106,4 +106,8 @@ public class Hand implements Iterable<Card>{
     public Card getCard(int index){
         return (hand.get(index));
     }
+
+    public void emptyHand(){
+        hand.clear();
+    }
 }

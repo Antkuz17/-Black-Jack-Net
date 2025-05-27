@@ -5,10 +5,11 @@ public class Game {
         public Hand playerHand = new Hand();
         public Hand dealerHand = new Hand();
         private Deck deck;
-        private Player player = new Player(playerHand, 1000, "Anton", 0,  0);
+        private Player player = new Player(playerHand, 1000, "Anton", 0, 0);
         private Dealer dealer = new Dealer(dealerHand);
         public static Scanner input = new Scanner(System.in);
         private boolean gameOver = false;
+        private String playAgain = "y";
 
         public Game() {
                 // Initialize deck, player, and dealer
@@ -18,20 +19,26 @@ public class Game {
         }
 
         public void start() {
-                // intro(); // Reads rules
-                dealInitialCards(); // deal initial hands (both player and dealer)
-                System.out.println("How much would you like to bet on this hand?: ");
-                player.placeBet(input.nextInt());
-                input.nextLine(); // consumes newline characters
-                System.out.println("You have the following cards: ");
-                playerHand.showHand();
-                System.out.println("The dealers up card is: ");
-                (dealerHand.getCard(0)).readCard();
-                playerTurn();
-                if (gameOver == false){
-                        dealerTurn();
+                while (playAgain.equalsIgnoreCase("y")) {
+                        playerHand.emptyHand();
+                        dealerHand.emptyHand();
+                        gameOver = false;
+                        dealInitialCards(); // deal initial hands (both player and dealer)
+                        System.out.println("How much would you like to bet on this hand?: ");
+                        player.placeBet(input.nextInt());
+                        input.nextLine(); // consumes newline characters
+                        System.out.println("You have the following cards: ");
+                        playerHand.showHand();
+                        System.out.println("The dealers up card is: ");
+                        (dealerHand.getCard(0)).readCard();
+                        playerTurn();
+                        if (gameOver == false) {
+                                dealerTurn();
+                        }
+                        System.out.println("Final Balance: " + player.getBalance());
+                        System.out.println("Play again?: (y/n) ");
+                        playAgain = input.nextLine();
                 }
-                System.out.println("Final Balance: " + player.getBalance());
 
         }
 
@@ -48,9 +55,23 @@ public class Game {
                 dealerHand.addCard(deck.draw());
                 // playerHand.addCard(new Card("Spades", "Ace"));
                 // playerHand.addCard(new Card("Spades", "King"));
-                
         }
 
+        /**
+         * Handles the player's turn
+         * <p>
+         * This method manages the sequence of actions available to the player, including:
+         * <ul>
+         *   <li>Checking for a natural blackjack and resolving outcomes (win, push, or continue).</li>
+         *   <li>Offering insurance if the dealer's up card is an Ace.</li>
+         *   <li>Allowing the player to double down.</li>
+         *   <li>Processing the player's choices to hit or stand, drawing cards as needed.</li>
+         *   <li>Determining if the player busts and resolving the bet accordingly.</li>
+         * </ul>
+         * The method updates the game state and player's bet based on the outcomes of these actions.
+         * It also prints relevant prompts and results to the console.
+         * 
+         */
         public void playerTurn() {
                 if (playerHand.getTotalValue() == 21) { // Checks if natural blackjack
                         System.out.println("You have natural blackjack");
@@ -67,30 +88,30 @@ public class Game {
                                 return;
                         }
                 }
-                if (dealerHand.getCard(0).getRank().equals("Ace")){ // insurance
+                if (dealerHand.getCard(0).getRank().equals("Ace")) { // insurance
                         System.out.println("The dealers up card is an ace");
                         System.out.println("You may buy insurance which is half your bet:");
                         System.out.println("Would you like insurance? (y/n)");
                         String insuranceAnswer = input.nextLine();
-                        if (insuranceAnswer.equalsIgnoreCase("y")){
+                        if (insuranceAnswer.equalsIgnoreCase("y")) {
                                 player.setInsurance();
                         }
                 }
 
                 System.out.println("Would you like to double down (y/n)");
                 String doubleDownAnswer = input.nextLine();
-                if(doubleDownAnswer.equalsIgnoreCase("y")){
+                if (doubleDownAnswer.equalsIgnoreCase("y")) {
                         player.doubleDown();
                 }
                 // hit or stand logic
                 System.out.println("Your hand has a value of: " + playerHand.getTotalValue());
                 System.out.print("Would you like to hit or stand?: (h/s)");
                 String choice = input.nextLine();
-                while(choice.equalsIgnoreCase("h")){
+                while (choice.equalsIgnoreCase("h")) {
                         playerHand.addCard(deck.draw());
                         System.out.println("Your hand is: ");
                         playerHand.showHand();
-                        if(playerHand.checkIfBust()){
+                        if (playerHand.checkIfBust()) {
                                 System.out.println("You are over 21, you bust and loose");
                                 player.looseBet();
                                 gameOver = true;
@@ -104,30 +125,44 @@ public class Game {
                 System.out.println("Your turn is over, now its dealer turn");
         }
 
-        public void dealerTurn(){
+        /**
+         * Executes the dealer's turn
+         * <p>
+         * The dealer reveals their hand and continues to draw cards from the deck
+         * until the total value of the dealer's hand is at least 17. After each draw,
+         * the dealer's hand and its value are displayed. If the dealer's hand exceeds
+         * 21, the dealer busts and the player wins the bet. If the dealer does not bust,
+         * the method compares the dealer's hand value to the player's hand value to
+         * determine the outcome:
+         * <ul>
+         *   <li>If the dealer's hand value is greater than the player's, the player loses the bet.</li>
+         *   <li>Otherwise, the player wins the bet.</li>
+         * </ul>
+         */
+        public void dealerTurn() {
                 System.out.println("Dealer Turn: ");
                 System.out.println("The dealer has the following");
                 dealerHand.showHand();
                 System.out.print("Value: " + dealerHand.getTotalValue());
-                while(dealerHand.getTotalValue() <17){
+                while (dealerHand.getTotalValue() < 17) {
                         dealerHand.addCard(deck.draw());
                         System.out.println("The dealer has the following");
                         dealerHand.showHand();
                         System.out.print("Value: " + dealerHand.getTotalValue());
-                        if(dealerHand.getTotalValue() >21){
+                        if (dealerHand.getTotalValue() > 21) {
                                 System.out.println("Dealer busts, you win");
                                 player.winBet();
                         }
                 }
-                if(dealerHand.getTotalValue() > playerHand.getTotalValue()){
+                if (dealerHand.getTotalValue() > playerHand.getTotalValue()) {
                         System.out.println("You lost, boohoo");
                         player.looseBet();
-                }
-                else{
+                } else {
                         System.out.println("You win, good job");
                         player.winBet();
                 }
         }
+
         /**
          * Asks if the player wants an review on game rules
          */
