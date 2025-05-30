@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new GameWebSocketHandler(), "/game")
-                .setAllowedOrigins("*"); // Allow all origins (for development)
+        registry.addHandler(new GameWebSocketHandler(), "/game").setAllowedOrigins("*"); // Allow all origins (for development)
     }
 }
+

@@ -70,7 +70,6 @@ public class Game {
          * </ul>
          * The method updates the game state and player's bet based on the outcomes of these actions.
          * It also prints relevant prompts and results to the console.
-         * 
          */
         public void playerTurn() {
                 if (playerHand.getTotalValue() == 21) { // Checks if natural blackjack
