@@ -1,3 +1,5 @@
+package com.antonkuzmichev.blackjack_server.game;
+
 // This class represents 1 card in a deck (contains methods that will read the card out, getter methods, and can return value of the card)
 
 public class Card {
@@ -62,7 +64,6 @@ public class Card {
             case "Queen": return 10;
             case "King": return 10;
             case "Ace": return 11; // or 1, depending on game rules(taken into account in the hand method)
-            case "cutCard": return -1; // cutCard has been reacher, reshuffle the deck
             default: return 0; 
         }
     }

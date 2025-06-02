@@ -1,4 +1,4 @@
-
+package com.antonkuzmichev.blackjack_server.game;
 /**
  * The {@code Deck} class represents one or more standard Blackjack decks.
  * It provides methods to shuffle the deck, draw cards, and insert a cut card
@@ -58,18 +58,10 @@ public class Deck implements Iterable<Card> {
         return drawnCard;
     }
 
-    /**
-     * Inserts the cut card between 30% and 75% of the way through the deck.
-     * <ul>
-     * <li>Prevents full-deck play.</li>
-     * <li>Limits advantage from card counting.</li>
-     * </ul>
-     */
-    public void insertCutCard() {
-        int deckLength = deck.size();
-        int minIndex = (int) (deckLength * 0.3);
-        int maxIndex = (int) (deckLength * 0.75);
-        int randomIndex = random.nextInt(minIndex, maxIndex + 1);
-        deck.add(randomIndex, new Card("cutCard", "cutCard"));
+    public int size(){
+        return deck.size();
     }
+
+
+
 }
