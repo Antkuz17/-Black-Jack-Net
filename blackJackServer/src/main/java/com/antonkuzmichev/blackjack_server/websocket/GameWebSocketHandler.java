@@ -34,7 +34,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                 room.removePlayer(session);
                 broadcastGameState(room);
 
-                // Remove empty rooms
                 if (room.getPlayers().isEmpty()) {
                     gameRooms.remove(roomId);
                 }
@@ -64,7 +63,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                 createRoom(session, message.getPlayerName());
                 break;
             case "joinRoom":
-                // Use the roomId from the message instead of trying to get it from session
                 joinRoom(session, message.getPlayerName(), message.getRoomId());
                 break;
             case "bet":
@@ -395,8 +393,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     }
 
     private String getRoomIdFromSession(WebSocketSession session) {
-        // This would typically come from the URL or connection parameters
-        // For now, you might need to modify this based on your frontend implementation
         return sessionToRoom.get(session);
     }
 
