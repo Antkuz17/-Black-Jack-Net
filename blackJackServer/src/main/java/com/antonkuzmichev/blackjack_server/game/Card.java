@@ -1,15 +1,17 @@
 package com.antonkuzmichev.blackjack_server.game;
 
-// This class represents 1 card in a deck (contains methods that will read the card out, getter methods, and can return value of the card)
+// This class represents 1 card internally
+// Differs from cardDTO as it acts as an internal representation of a playing card
 
 public class Card {
     private String suit; 
     private String rank;
     //Creating instance variables
 
+    //Constructor
     public Card(String suit, String rank){
-        this.suit = suit; // Suit of the card
-        this.rank = rank; // Rank of card (king, ace, queen, 2, etc)
+        this.suit = suit; 
+        this.rank = rank; 
     }
     /**
      * Reads the card in format (King of Spades)
@@ -43,10 +45,7 @@ public class Card {
      *   <li>Number cards ("2"–"10") return their numeric value.</li>
      *   <li>Face cards ("Jack", "Queen", "King") return 10.</li>
      *   <li>"Ace" returns 11 (or 1, depending on game rules).</li>
-     *   <li>"cutCard" returns -1, indicating the cut card has been reached and the deck should be reshuffled.</li>
-     *   <li>Any unrecognized rank returns 0.</li>
      * </ul>
-     *
      * @return the integer value of the card's rank
      */
     public int getValue() {
@@ -67,5 +66,4 @@ public class Card {
             default: return 0; 
         }
     }
-
 }

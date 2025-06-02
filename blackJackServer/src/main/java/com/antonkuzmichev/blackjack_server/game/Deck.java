@@ -1,20 +1,13 @@
 package com.antonkuzmichev.blackjack_server.game;
-/**
- * The {@code Deck} class represents one or more standard Blackjack decks.
- * It provides methods to shuffle the deck, draw cards, and insert a cut card
- * to simulate real casino play and prevent card counting.
- * <p>
- * Each deck consists of 52 cards, and the number of decks can be specified
- * during instantiation. The class relies on the {@code Card} class to represent
- * individual playing cards.
- */
+//Represents 1 full blackJackDeck. Number of 52 card decks included can be stated when a new deck is created
+//Deck itself is an array list, and is created using triple nested for loops
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Iterator;
 
-public class Deck implements Iterable<Card> {
-    private ArrayList<Card> deck;
+public class Deck implements Iterable<Card> { // Implements Iterable Interface meaning a for each loop is allowed for cards
+    private ArrayList<Card> deck; // Deck is stored as an arrayList
     public int decks;
     public static Random random = new Random();
 
@@ -34,7 +27,7 @@ public class Deck implements Iterable<Card> {
 
     /**
      * Returns an iterator over the cards in the deck.
-     * Allows the Deck to be used in enhanced for-loops.
+     * Allows the Deck to be used in for-each loops
      */
     public Iterator<Card> iterator() {
         return deck.iterator();
@@ -52,13 +45,14 @@ public class Deck implements Iterable<Card> {
      * 
      * @return The top card of the deck
      */
-    public Card draw() {
-        Card drawnCard = deck.get(0);
-        deck.remove(0);
-        return drawnCard;
+    public Card draw() { 
+        Card drawnCard = deck.get(0); // stores top card as drawnCard
+        deck.remove(0); // Removes that card
+        return drawnCard; // Returns the drawn card
     }
-
-    public int size(){
+    
+    // Returns the number of cards left in the deck using the .size() method in the ArrayList Library
+    public int size(){ 
         return deck.size();
     }
 

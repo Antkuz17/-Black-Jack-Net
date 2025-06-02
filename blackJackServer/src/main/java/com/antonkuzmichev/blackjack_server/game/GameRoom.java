@@ -18,6 +18,7 @@ public class GameRoom {
     private Hand dealerHand;
     private GamePhase currentPhase = GamePhase.WAITING;
 
+    // Constructor
     public GameRoom(String roomId, WebSocketSession host) {
         this.roomId = roomId;
         this.host = host;
@@ -26,6 +27,7 @@ public class GameRoom {
         this.dealerHand = new Hand();
     }
 
+    // Adds a player to "players" and stores their order
     public void addPlayer(WebSocketSession session, Player player) {
         players.put(session, player);
         playerOrder.add(session);

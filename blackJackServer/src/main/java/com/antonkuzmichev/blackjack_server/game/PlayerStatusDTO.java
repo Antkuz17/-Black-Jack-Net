@@ -2,7 +2,8 @@ package com.antonkuzmichev.blackjack_server.game;
 
 import java.util.List;
 import java.util.ArrayList;
-// PlayerStatusDTO.java
+
+// Class is used for easy communication with the front end. Transfers as Json object to the front end
 class PlayerStatusDTO {
     private String sessionId;
     private String name;
@@ -16,6 +17,7 @@ class PlayerStatusDTO {
     private boolean hasNaturalBlackjack;
     private List<CardDTO> cards;
 
+    // Constructor
     public PlayerStatusDTO(String name, int balance, int bet, int insurance,
             int handValue, int cardCount, boolean hasActed,
             boolean isBusted, boolean hasNaturalBlackjack) {

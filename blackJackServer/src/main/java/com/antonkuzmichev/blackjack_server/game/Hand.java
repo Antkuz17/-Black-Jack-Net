@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * The Hand class represents a player's hand in a card game.
- * It manages a collection of Card objects, allowing cards to be added,
- * the total value of the hand to be calculated, and checks for bust conditions.
+ * The Hand class represents a player's hand
+ * It manages a collection of Card objects, allows adding, removing, checking conditions, and showing a players hand
  */
 
 public class Hand implements Iterable<Card> {
@@ -14,7 +13,7 @@ public class Hand implements Iterable<Card> {
 
     /**
      * Returns an iterator over the cards in the deck.
-     * Allows the Deck to be used in enhanced for-loops.
+     * Allows the Deck to be used in for each loops
      */
     public Iterator<Card> iterator() {
         return hand.iterator();
@@ -95,6 +94,9 @@ public class Hand implements Iterable<Card> {
         return (hand.get(index));
     }
 
+    /**
+     * Clear all the cards out of the hand arrayList
+     */
     public void emptyHand() {
         hand.clear();
     }

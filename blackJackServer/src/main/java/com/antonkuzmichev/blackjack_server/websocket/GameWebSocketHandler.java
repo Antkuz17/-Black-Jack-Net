@@ -15,37 +15,39 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameWebSocketHandler extends TextWebSocketHandler {
 
-    private final Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
-    private final Map<WebSocketSession, String> sessionToRoom = new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>(); // Thread safe map implementation allowing multi-threading
+    private final Map<WebSocketSession, String> sessionToRoom = new ConcurrentHashMap<>(); // Important to avoid corruption since multiple clients may write at one time
+    private final ObjectMapper objectMapper = new ObjectMapper(); // Jackson library used to convert from java object to json
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) throws Exception {
         System.out.println("New WebSocket connection: " + session.getId());
         sendMessage(session, createMessage("connection", "Connected successfully"));
     }
+    // Sends confirmation message to both server and client that connection is successful
 
     @Override
-    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) { //Clean up player data
         String roomId = sessionToRoom.get(session);
         if (roomId != null) {
             GameRoom room = gameRooms.get(roomId);
             if (room != null) {
-                room.removePlayer(session);
-                broadcastGameState(room);
+                room.removePlayer(session); // remove player from room
+                broadcastGameState(room); // broadcast to other players that someone disconnected
 
                 if (room.getPlayers().isEmpty()) {
                     gameRooms.remove(roomId);
-                }
+                } // If the room is now empty, remove the room as well
             }
             sessionToRoom.remove(session);
         }
         System.out.println("Connection closed: " + session.getId());
+        // Send confirmaiton to server
     }
 
     @Override
     protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message)
-            throws IOException {
+            throws IOException { // Parses client message from json into a client message object
         try {
             ClientMessage clientMessage = objectMapper.readValue(message.getPayload(), ClientMessage.class);
             handleClientMessage(session, clientMessage);
@@ -56,7 +58,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void handleClientMessage(WebSocketSession session, ClientMessage message) throws IOException {
-        String messageType = message.getType();
+        String messageType = message.getType(); // Depending on the clients message do different things like bet deal etc
 
         switch (messageType) {
             case "createRoom":
@@ -88,21 +90,22 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void createRoom(WebSocketSession session, String playerName) throws IOException {
-        String roomId = UUID.randomUUID().toString().substring(0, 8);
+    private void createRoom(WebSocketSession session, String playerName) throws IOException { // Creates new room
+        String roomId = UUID.randomUUID().toString().substring(0, 8); // Generate a random number for ID
         Player host = new Player(new Hand(), 1000, playerName != null ? playerName : "Host", 0, 0);
+        // Makes a host and addes the host to the gameroom
         GameRoom room = new GameRoom(roomId, session);
         room.addPlayer(session, host);
 
         gameRooms.put(roomId, room);
         sessionToRoom.put(session, roomId);
 
-        sendMessage(session, createMessage("roomCreated", roomId));
-        broadcastGameState(room);
+        sendMessage(session, createMessage("roomCreated", roomId)); // Send confirmation message
+        broadcastGameState(room); // Broadcast the new room to everyone
     }
 
     private void joinRoom(WebSocketSession session, String playerName, String roomId) throws IOException {
-        if (roomId == null) {
+        if (roomId == null) { // If no room id was entered give an error
             sendMessage(session, createMessage("error", "No room ID provided"));
             return;
         }
@@ -113,17 +116,17 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        if (room.getPlayers().size() >= 6) {
+        if (room.getPlayers().size() >= 6) { // If more than 6 people give error
             sendMessage(session, createMessage("error", "Room is full"));
             return;
         }
 
         Player player = new Player(new Hand(), 1000, playerName != null ? playerName : "Player", 0, 0);
-        room.addPlayer(session, player);
+        room.addPlayer(session, player); // Add the player to the room
         sessionToRoom.put(session, roomId);
 
-        sendMessage(session, createMessage("joinedRoom", roomId));
-        broadcastGameState(room);
+        sendMessage(session, createMessage("joinedRoom", roomId)); 
+        broadcastGameState(room); // broadcast the new player to everyone
     }
 
     private void startGame(WebSocketSession session) throws IOException {
@@ -390,10 +393,6 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
             return false;
         }
         return session.equals(room.getPlayerOrder().get(room.getCurrentPlayerIndex()));
-    }
-
-    private String getRoomIdFromSession(WebSocketSession session) {
-        return sessionToRoom.get(session);
     }
 
     private void broadcastGameState(GameRoom room) {

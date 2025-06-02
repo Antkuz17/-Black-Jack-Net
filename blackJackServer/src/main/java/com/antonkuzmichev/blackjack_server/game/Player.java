@@ -1,13 +1,16 @@
 package com.antonkuzmichev.blackjack_server.game;
 
+
+// Class represents 1 player and all the associated attributes
 public class Player {
     private Hand hand;
     private int balance;
     private String name;
     private int bet;
     private int insurance;
-    private boolean hasActed = false; // Track if player has completed their turn
-
+    private boolean hasActed = false; // Track if player has completed their turn 
+    
+    // Constructor
     public Player(Hand hand, int balance, String name, int bet, int insurance) {
         this.hand = hand;
         this.balance = balance;
@@ -16,7 +19,7 @@ public class Player {
         this.insurance = insurance;
     }
 
-    // Existing methods with modifications for multiplayer
+    // Getters and setters
     public int getBalance() {
         return balance;
     }
@@ -52,11 +55,11 @@ public class Player {
      * @return true if bet was placed successfully
      */
     public boolean placeBet(int amount) {
-        if (balance < amount || amount <= 0) {
+        if (balance < amount || amount <= 0) { // If they dont have enough money or they have no money in the account, return false
             return false;
         }
         bet = amount;
-        balance -= bet;
+        balance -= bet; // If the bet was successful return true
         return true;
     }
 
@@ -84,7 +87,7 @@ public class Player {
     }
 
     /**
-     * Natural blackjack payout (1.5x bet + original bet back)
+     * Natural blackjack, pays less than normal win (1.5x and not 2x)
      */
     public void naturalBJ() {
         balance += bet + (bet * 3 / 2);
@@ -98,12 +101,12 @@ public class Player {
      */
     public boolean buyInsurance() {
         int insuranceCost = bet / 2;
-        if (balance < insuranceCost) {
+        if (balance < insuranceCost) { // If not enough money return false
             return false;
         }
         insurance = insuranceCost;
         balance -= insurance;
-        return true;
+        return true; // Otherwise return true
     }
 
     /**
@@ -136,7 +139,7 @@ public class Player {
     }
 
     /**
-     * Reset for new round - clears hand, bets, but keeps balance
+     * Reset for new round: clears hand, bets, but keeps balance
      */
     public void resetRound() {
         bet = 0;
@@ -168,6 +171,8 @@ public class Player {
 
     /**
      * Get player status for game state
+     * Returns all relevant stats for a player
+     * Used in communicating with other clients
      */
     public PlayerStatusDTO getStatusDTO() {
         return new PlayerStatusDTO(
