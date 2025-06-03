@@ -257,7 +257,15 @@ const BlackjackGame = () => {
   // Room selection screen
   if (!gameState) {
     return (
-      <div className="min-h-screen bg-green-800 flex items-center justify-center">
+      <div
+      className="min-h-screen bg-green-800 bg-opacity-80 bg-blend-overlay flex items-center justify-center"
+      style={{
+        backgroundImage: `url('/26701996-53f2-4859-9476-4cd2561529b2.jpg')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        height: '500px',
+      }}
+      >
         <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full">
           <h1 className="text-2xl font-bold text-center mb-6">Join or Create Room</h1>
           
