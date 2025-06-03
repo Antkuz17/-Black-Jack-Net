@@ -14,7 +14,7 @@ const BlackjackGame = () => {
   // WebSocket connection
   const connectWebSocket = useCallback(() => {
     try {
-      const websocket = new WebSocket('ws://10.0.0.214:8080/game');
+      const websocket = new WebSocket('ws://10.10.172.83:8080/game');
       
       websocket.onopen = () => {
         console.log('Connected to WebSocket');
@@ -208,41 +208,48 @@ const BlackjackGame = () => {
   // Connection screen
   if (connectionStatus !== 'connected') {
     return (
-      <div className="min-h-screen bg-green-800 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full">
-          <h1 className="text-3xl font-bold text-center mb-6">Blackjack Game</h1>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Your Name</label>
-              <input
-                type="text"
-                value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your name"
-              />
-            </div>
-
-            <div className="text-center">
-              <button
-                onClick={connectWebSocket}
-                disabled={connectionStatus === 'connecting'}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-              >
-                {connectionStatus === 'connecting' ? 'Connecting...' : 'Connect to Game'}
-              </button>
-            </div>
-
-            <div className="text-center text-sm text-gray-600">
-              Status: <span className={`font-semibold ${
-                connectionStatus === 'error' ? 'text-red-600' : 'text-gray-800'
-              }`}>
-                {connectionStatus}
-              </span>
-            </div>
-          </div>
+      <div
+      className="min-h-screen bg-green-800 bg-opacity-80 bg-blend-overlay flex items-center justify-center"
+      style={{
+        backgroundImage: `url('/26701996-53f2-4859-9476-4cd2561529b2.jpg')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        height: '500px',
+      }}
+      >
+      <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full">
+        <h1 className="text-3xl font-bold text-center mb-6">Blackjack Game</h1>
+        <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-2">Your Name</label>
+          <input
+          type="text"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter your name"
+          />
         </div>
+
+        <div className="text-center">
+          <button
+          onClick={connectWebSocket}
+          disabled={connectionStatus === 'connecting'}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          >
+          {connectionStatus === 'connecting' ? 'Connecting...' : 'Connect to Game'}
+          </button>
+        </div>
+
+        <div className="text-center text-sm text-gray-600">
+          Status: <span className={`font-semibold ${
+          connectionStatus === 'error' ? 'text-red-600' : 'text-gray-800'
+          }`}>
+          {connectionStatus}
+          </span>
+        </div>
+        </div>
+      </div>
       </div>
     );
   }
