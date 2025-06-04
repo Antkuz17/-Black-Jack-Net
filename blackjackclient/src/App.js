@@ -218,10 +218,10 @@ const BlackjackGame = () => {
       }}
       >
       <div className="bg-white rounded-lg p-8 shadow-2xl max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center mb-6">Blackjack Game</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Blackjack Net</h1>
         <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Your Name</label>
+          <label className="block text-sm font-medium mb-2">Username</label>
           <input
           type="text"
           value={playerName}
@@ -332,7 +332,15 @@ const BlackjackGame = () => {
   const isHost = gameState.hostId === currentPlayerId;
 
   return (
-    <div className="min-h-screen bg-green-800 p-4">
+    <div
+      className="min-h-screen bg-green-800 bg-opacity-80 bg-blend-overlay flex items-center justify-center"
+      style={{
+        backgroundImage: `url('/9999520.jpg')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        height: '500px',
+      }}
+      >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-lg p-4 mb-4 shadow-lg">
